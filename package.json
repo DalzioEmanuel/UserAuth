@@ -1,0 +1,20 @@
+{
+  "name": "user_authentication",
+  "version": "1.0.0",
+  "description": "this app was developed to learn how to use user authentication",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Dalzio Alfredo",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.18.2",
+    "express-handlebars": "^7.1.1",
+    "express-session": "^1.17.3",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "sequelize": "^6.32.1"
+  }
+}
