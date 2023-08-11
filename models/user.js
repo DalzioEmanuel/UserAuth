@@ -52,7 +52,7 @@ async function saveUser(req, res){
                 email: user.email,
                 senha: user.senha
             });
-            
+
             res.redirect('/');
         } catch (error) {
             console.log('Error' + error);
@@ -60,5 +60,4 @@ async function saveUser(req, res){
     });
 }
 
-
-module.exports = {saveUser};
+module.exports = {saveUser, User};
