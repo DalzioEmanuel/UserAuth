@@ -4,7 +4,6 @@ const {engine} = require('express-handlebars');
 const path = require('path');
 const session = require('express-session');
 const {saveUser} = require('./models/user')
-
 const app = express();
 
 app.use(session({
@@ -31,6 +30,9 @@ app.engine('handlebars', engine({
     }
 }));
 
+// Require and configure passport strategies
+require('./config/auth')(passport);
+
 app.set('view engine', 'handlebars');
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -47,14 +49,11 @@ app.post('/registar', (req, res)=>{
     if(req.body.senha === req.body.senha2) saveUser(req, res);
     else res.redirect('/registar');
 });
-app.post('/login', async (req, res, next)=>{
-    passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/login',
-        failureFlash: false
-    })(req, res, next)
-    console.log('Login')
-});
+
+app.post('/login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login'
+}));
 
 app.get('/logout', (req, res) => {
     req.logOut((err)=>{

@@ -1,24 +1,18 @@
 const localStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
-const Passport = require('passport');
 const {User} = require('../models/user');
 
-module.exports = (passport = Passport) => {
-    
+module.exports = (passport) => {
+
     passport.use(new localStrategy({usernameField : 'email', passwordField: 'senha'}, async (email, senha, done) =>{
         try {
-            let user = await User.findOne({
-                where: {
-                    email: email
-                }
-            });
+            const user = await User.findOne({where: { email } });
+            if(!user) return done(null, false);
 
-            if(!user) return done(null, false, {message: 'Esta conta não existe'});
-
-            const equal = await bcrypt.compare(senha, user.getDataValue('senha'));
+            const equal = await bcrypt.compare(senha, user.senha);
 
             if(equal) done(null, user.get());
-            else done(null, false, {message: 'Senha incorreta'});
+            else done(null, false);
 
         } catch (error) {
             console.log('Error: ' + error);
@@ -27,17 +21,12 @@ module.exports = (passport = Passport) => {
     }));
 
     passport.serializeUser((user, done)=>{
-        done(null, user.getDataValue('id'));
+        done(null, user.id);
     });
 
     passport.deserializeUser(async (id, done)=>{
         try {
-            let user = await User.findOne({
-                where: {
-                    id: id
-                }
-            });
-
+            const user = await User.findByPk(id);
             if(!user) return done(null, false);
 
             done(null, user.get());
